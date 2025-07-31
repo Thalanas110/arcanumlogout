@@ -1,5 +1,8 @@
 // Admin Panel JavaScript
 class AdminPanel {
+    updatePagination() {
+        this.renderPagination();
+    }
     constructor() {
         this.currentLogs = [];
         this.currentPage = 1;
