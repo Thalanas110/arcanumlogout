@@ -11,6 +11,7 @@
     { "src": "/api/(.*)", "dest": "/server.js" },
     { "src": "/admin-login", "dest": "/public/login.html" },
     { "src": "/login", "dest": "/public/login.html" },
+    { "src": "/admin-panel", "dest": "/public/admin.html" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
