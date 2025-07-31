@@ -378,9 +378,31 @@ router.get('/logs', requireAuth, async (req, res) => {
         const logs = await query.orderBy(desc(logEntries.createdAt)).limit(parseInt(limit)).offset(offset);
         const total = (await db.select().from(logEntries)).length;
 
+        // Map logs to snake_case for frontend compatibility
+        const snakeCaseLogs = logs.map(log => ({
+            id: log.id,
+            name: log.name,
+            position: log.position,
+            start_date: log.startDate,
+            end_date: log.endDate,
+            attendees_batch1: log.attendeesBatch1,
+            attendees_batch2: log.attendeesBatch2,
+            dropped_links: log.droppedLinks,
+            recruits: log.recruits,
+            nicknames_set: log.nicknamesSet,
+            game_handled: log.gameHandled,
+            attendees_total: log.attendeesTotal,
+            dropped_links_total: log.droppedLinksTotal,
+            recruits_total: log.recruitsTotal,
+            nicknames_set_total: log.nicknamesSetTotal,
+            game_handled_total: log.gameHandledTotal,
+            ip_address: log.ipAddress,
+            created_at: log.createdAt,
+            updated_at: log.updatedAt
+        }));
         res.json({
             success: true,
-            logs,
+            logs: snakeCaseLogs,
             total
         });
     } catch (error) {
