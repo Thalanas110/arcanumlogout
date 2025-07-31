@@ -16,5 +16,7 @@
     "express": "^5.1.0",
     "postgres": "^3.4.7",
     "supabase": "^2.33.7"
+    ,
+    "express-session": "^1.17.3"
   }
 }
