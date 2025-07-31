@@ -380,12 +380,8 @@ router.get('/logs', requireAuth, async (req, res) => {
 
         res.json({
             success: true,
-            data: logs,
-            pagination: {
-                page: parseInt(page),
-                limit: parseInt(limit),
-                total
-            }
+            logs,
+            total
         });
     } catch (error) {
         console.error('Error fetching logs:', error);
@@ -405,11 +401,7 @@ router.get('/activity', requireAuth, async (req, res) => {
             .offset(offset);
         res.json({
             success: true,
-            data: activities,
-            pagination: {
-                page: parseInt(page),
-                limit: parseInt(limit)
-            }
+            activities
         });
     } catch (error) {
         console.error('Error fetching activity log:', error);
