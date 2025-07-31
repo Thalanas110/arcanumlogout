@@ -365,6 +365,63 @@ router.get('/export', requireAuth, async (req, res) => {
         res.status(500).json({ error: 'Failed to export logs' });
     }
 });
+// Alias for /admin/logs/export for CSV export compatibility
+router.get('/logs/export', requireAuth, async (req, res) => {
+    // Copy query params and call the same logic as /export
+    req.query.format = req.query.format || 'csv';
+    // Inline the /export logic here for compatibility
+    try {
+        const { format = 'csv', ...filters } = req.query;
+        let query = db.select().from(logEntries);
+        // ... (filter implementation similar to api.js)
+        const logs = await query.orderBy(desc(logEntries.createdAt));
+        if (format === 'csv') {
+            const csvHeaders = [
+                'ID', 'Name', 'Position', 'Start Date', 'End Date',
+                'Attendees Batch 1', 'Attendees Batch 2', 'Attendees Total',
+                'Dropped Links', 'Dropped Links Total',
+                'Recruits', 'Recruits Total',
+                'Nicknames Set', 'Nicknames Set Total',
+                'Game Handled', 'Game Handled Total',
+                'IP Address', 'Created At'
+            ].join(',');
+            const csvRows = logs.map(log => [
+                log.id,
+                `"${log.name}"`,
+                log.position,
+                log.startDate?.toISOString() || '',
+                log.endDate?.toISOString() || '',
+                log.attendeesBatch1,
+                log.attendeesBatch2,
+                log.attendeesTotal,
+                log.droppedLinks,
+                log.droppedLinksTotal,
+                log.recruits,
+                log.recruitsTotal,
+                log.nicknamesSet,
+                log.nicknamesSetTotal,
+                log.gameHandled,
+                log.gameHandledTotal,
+                log.ipAddress || '',
+                log.createdAt?.toISOString() || ''
+            ].join(','));
+            const csv = [csvHeaders, ...csvRows].join('\n');
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename="arcanum_logs.csv"');
+            res.send(csv);
+        } else {
+            res.json({ success: true, data: logs });
+        }
+        await logActivity('export', req.session.adminUser, null, {
+            format,
+            recordCount: logs.length,
+            filters
+        }, getClientIP(req));
+    } catch (error) {
+        console.error('Error exporting logs:', error);
+        res.status(500).json({ error: 'Failed to export logs' });
+    }
+});
 
 module.exports = router;
 // Get logs with pagination and filters
