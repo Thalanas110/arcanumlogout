@@ -14,6 +14,10 @@
 .modal {
     z-index: 10000;
 }
+
+.modal-overlay.active {
+    display: flex !important;
+}
 /* Ensure modals are visible and on top */
 .modal-overlay {
     display: none;
