@@ -134,39 +134,46 @@ router.get('/dashboard-stats', requireAuth, async (req, res) => {
 router.put('/logs/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
+        // Accept snake_case from frontend and convert to camelCase
         const {
             name,
             position,
-            startDate,
-            endDate,
-            attendeesBatch1,
-            attendeesBatch2,
-            droppedLinks,
+            start_date,
+            end_date,
+            attendees_batch1,
+            attendees_batch2,
+            dropped_links,
             recruits,
-            nicknamesSet,
-            gameHandled
+            nicknames_set,
+            game_handled
         } = req.body;
 
+        // Convert date strings to valid Date objects, fallback to null if invalid
+        const startDate = start_date ? new Date(start_date) : null;
+        const endDate = end_date ? new Date(end_date) : null;
+        const validStartDate = startDate && !isNaN(startDate.getTime()) ? startDate : null;
+        const validEndDate = endDate && !isNaN(endDate.getTime()) ? endDate : null;
+
         // Calculate totals
-        const attendeesTotal = (parseInt(attendeesBatch1) + parseInt(attendeesBatch2)) * 150;
-        const droppedLinksTotal = parseInt(droppedLinks) * 100;
+        const attendeesTotal = (parseInt(attendees_batch1) + parseInt(attendees_batch2)) * 150;
+        const droppedLinksTotal = parseInt(dropped_links) * 100;
         const recruitsTotal = parseInt(recruits) * 500;
-        const nicknamesSetTotal = parseInt(nicknamesSet) * 100;
-        const gameHandledTotal = parseInt(gameHandled) * 1000;
+        const nicknamesSetTotal = parseInt(nicknames_set) * 100;
+        const gameHandledTotal = parseInt(game_handled) * 1000;
 
         // Update the entry
         const result = await db.update(logEntries)
             .set({
                 name,
                 position,
-                startDate: new Date(startDate),
-                endDate: endDate ? new Date(endDate) : null,
-                attendeesBatch1: parseInt(attendeesBatch1),
-                attendeesBatch2: parseInt(attendeesBatch2),
-                droppedLinks: parseInt(droppedLinks),
+                startDate: validStartDate,
+                endDate: validEndDate,
+                attendeesBatch1: parseInt(attendees_batch1),
+                attendeesBatch2: parseInt(attendees_batch2),
+                droppedLinks: parseInt(dropped_links),
                 recruits: parseInt(recruits),
-                nicknamesSet: parseInt(nicknamesSet),
-                gameHandled: parseInt(gameHandled),
+                nicknamesSet: parseInt(nicknames_set),
+                gameHandled: parseInt(game_handled),
                 attendeesTotal,
                 droppedLinksTotal,
                 recruitsTotal,
