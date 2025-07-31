@@ -7,8 +7,8 @@ const { requireAuth } = require('../middleware/auth');
 const router = express.Router();
 
 // Admin credentials
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'ArcanumAdmin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Arcanum203%!';
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 // Helper function to get client IP
 function getClientIP(req) {
@@ -360,3 +360,59 @@ router.get('/export', requireAuth, async (req, res) => {
 });
 
 module.exports = router;
+// Get logs with pagination and filters
+router.get('/logs', requireAuth, async (req, res) => {
+    try {
+        const { page = 1, limit = 10, name, position, startDate, endDate } = req.query;
+        const offset = (parseInt(page) - 1) * parseInt(limit);
+
+        let query = db.select().from(logEntries);
+        let conditions = [];
+        if (name) conditions.push(ilike(logEntries.name, `%${name}%`));
+        if (position) conditions.push(eq(logEntries.position, position));
+        // Filtering by startDate and endDate (if provided)
+        if (startDate) conditions.push(logEntries.startDate >= new Date(startDate));
+        if (endDate) conditions.push(logEntries.endDate <= new Date(endDate));
+        if (conditions.length) query = query.where(and(...conditions));
+
+        const logs = await query.orderBy(desc(logEntries.createdAt)).limit(parseInt(limit)).offset(offset);
+        const total = (await db.select().from(logEntries)).length;
+
+        res.json({
+            success: true,
+            data: logs,
+            pagination: {
+                page: parseInt(page),
+                limit: parseInt(limit),
+                total
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching logs:', error);
+        res.status(500).json({ error: 'Failed to fetch logs' });
+    }
+});
+
+// Alias for /admin/activity-log
+router.get('/activity', requireAuth, async (req, res) => {
+    try {
+        const { page = 1, limit = 50 } = req.query;
+        const offset = (parseInt(page) - 1) * parseInt(limit);
+        const activities = await db.select()
+            .from(activityLog)
+            .orderBy(desc(activityLog.timestamp))
+            .limit(parseInt(limit))
+            .offset(offset);
+        res.json({
+            success: true,
+            data: activities,
+            pagination: {
+                page: parseInt(page),
+                limit: parseInt(limit)
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching activity log:', error);
+        res.status(500).json({ error: 'Failed to fetch activity log' });
+    }
+});
