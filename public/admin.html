@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Arcanum Academy</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a5b4fc'><path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/></svg>">
+</head>
+<body class="light-theme">
+    <!-- Background overlay -->
+    <div class="background-overlay"></div>
+    
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <h2>🔐 Admin Panel</h2>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <div class="mobile-nav-content" id="mobileNavContent">
+            <a href="#dashboard" class="nav-link active" data-tab="dashboard">📊 Dashboard</a>
+            <a href="#logs" class="nav-link" data-tab="logs">📝 Log Entries</a>
+            <a href="#activity" class="nav-link" data-tab="activity">📋 Activity Log</a>
+            <a href="#export" class="nav-link" data-tab="export">📤 Export Data</a>
+            <button class="theme-toggle" id="mobileThemeToggle">
+                <span class="theme-icon">🌙</span>
+                <span class="theme-text">Dark Mode</span>
+            </button>
+            <button class="logout-btn" id="mobileLogoutBtn">🚪 Logout</button>
+        </div>
+    </nav>
+
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🔐 Admin Panel</h2>
+            <p class="admin-user">Welcome, <span id="adminUsername">Admin</span></p>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-link active" data-tab="dashboard">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="#logs" class="nav-link" data-tab="logs">
+                <span class="nav-icon">📝</span>
+                <span class="nav-text">Log Entries</span>
+            </a>
+            <a href="#activity" class="nav-link" data-tab="activity">
+                <span class="nav-icon">📋</span>
+                <span class="nav-text">Activity Log</span>
+            </a>
+            <a href="#export" class="nav-link" data-tab="export">
+                <span class="nav-icon">📤</span>
+                <span class="nav-text">Export Data</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="theme-toggle" id="desktopThemeToggle">
+                <span class="theme-icon">🌙</span>
+                <span class="theme-text">Dark Mode</span>
+            </button>
+            <button class="logout-btn" id="desktopLogoutBtn">
+                <span>🚪</span> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Tab -->
+        <div class="tab-content active" id="dashboard">
+            <div class="container">
+                <header class="page-header">
+                    <h1 class="page-title">📊 Dashboard Overview</h1>
+                    <p class="page-subtitle">System statistics and recent activity</p>
+                </header>
+
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">Total Log Entries</h3>
+                            <p class="stat-value" id="totalLogs">-</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">Active Positions</h3>
+                            <p class="stat-value" id="activePositions">-</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">This Week</h3>
+                            <p class="stat-value" id="weeklyLogs">-</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">Today</h3>
+                            <p class="stat-value" id="todayLogs">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-sections">
+                    <section class="dashboard-section">
+                        <h3 class="section-title">Position Distribution</h3>
+                        <div class="position-chart" id="positionChart">
+                            <!-- Position distribution will be rendered here -->
+                        </div>
+                    </section>
+
+                    <section class="dashboard-section">
+                        <h3 class="section-title">Recent Activity</h3>
+                        <div class="activity-feed" id="recentActivity">
+                            <!-- Recent activity will be rendered here -->
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- Log Entries Tab -->
+        <div class="tab-content" id="logs">
+            <div class="container">
+                <header class="page-header">
+                    <h1 class="page-title">📝 Log Entries Management</h1>
+                    <p class="page-subtitle">View, edit, and manage all log entries</p>
+                </header>
+
+                <!-- Filters and Controls -->
+                <div class="controls-section">
+                    <div class="filters-row">
+                        <div class="search-group">
+                            <input type="text" id="searchLogs" class="search-input" 
+                                   placeholder="Search by name or position...">
+                            <button class="search-btn" id="searchBtn">🔍</button>
+                        </div>
+
+                        <select id="positionFilter" class="filter-select">
+                            <option value="all">All Positions</option>
+                            <option value="handler">Handler</option>
+                            <option value="lead">Lead</option>
+                            <option value="moderator">Moderator</option>
+                            <option value="elder">Elder</option>
+                            <option value="co-owner">Co-Owner</option>
+                            <option value="owner">Owner</option>
+                        </select>
+
+                        <input type="date" id="dateFromFilter" class="filter-input">
+                        <input type="date" id="dateToFilter" class="filter-input">
+                    </div>
+
+                    <div class="actions-row">
+                        <button class="btn btn-danger" id="bulkDeleteBtn" disabled>
+                            🗑️ Delete Selected
+                        </button>
+                        <button class="btn btn-secondary" id="refreshLogsBtn">
+                            🔄 Refresh
+                        </button>
+                        <button class="btn btn-primary" id="exportSelectedBtn">
+                            📤 Export Selected
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="table-container">
+                    <table class="data-table" id="logsTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="selectAll">
+                                </th>
+                                <th class="sortable" data-sort="name">Name</th>
+                                <th class="sortable" data-sort="position">Position</th>
+                                <th class="sortable" data-sort="startDate">Date Range</th>
+                                <th>Metrics</th>
+                                <th>Total Points</th>
+                                <th class="sortable" data-sort="createdAt">Submitted</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody">
+                            <!-- Table rows will be rendered here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="logsPagination">
+                    <!-- Pagination controls will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Log Tab -->
+        <div class="tab-content" id="activity">
+            <div class="container">
+                <header class="page-header">
+                    <h1 class="page-title">📋 Activity Log</h1>
+                    <p class="page-subtitle">Audit trail of all administrative actions</p>
+                </header>
+
+                <div class="activity-container">
+                    <div class="activity-filters">
+                        <select id="activityTypeFilter" class="filter-select">
+                            <option value="all">All Actions</option>
+                            <option value="login">Login</option>
+                            <option value="create">Create</option>
+                            <option value="update">Update</option>
+                            <option value="delete">Delete</option>
+                            <option value="export">Export</option>
+                        </select>
+                        <button class="btn btn-secondary" id="refreshActivityBtn">
+                            🔄 Refresh
+                        </button>
+                    </div>
+
+                    <div class="activity-list" id="activityList">
+                        <!-- Activity items will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Tab -->
+        <div class="tab-content" id="export">
+            <div class="container">
+                <header class="page-header">
+                    <h1 class="page-title">📤 Export Data</h1>
+                    <p class="page-subtitle">Export log entries with custom filters</p>
+                </header>
+
+                <div class="export-container">
+                    <div class="export-form">
+                        <div class="form-section">
+                            <h3 class="section-title">Export Filters</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Export Format</label>
+                                    <select id="exportFormat" class="form-select">
+                                        <option value="csv">CSV Spreadsheet</option>
+                                        <option value="json">JSON Data</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Position Filter</label>
+                                    <select id="exportPositionFilter" class="form-select">
+                                        <option value="all">All Positions</option>
+                                        <option value="handler">Handler</option>
+                                        <option value="lead">Lead</option>
+                                        <option value="moderator">Moderator</option>
+                                        <option value="elder">Elder</option>
+                                        <option value="co-owner">Co-Owner</option>
+                                        <option value="owner">Owner</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Date Range From</label>
+                                    <input type="date" id="exportDateFrom" class="form-input">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Date Range To</label>
+                                    <input type="date" id="exportDateTo" class="form-input">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Name Filter</label>
+                                <input type="text" id="exportNameFilter" class="form-input" 
+                                       placeholder="Filter by specific names (optional)">
+                            </div>
+                        </div>
+
+                        <div class="export-actions">
+                            <button class="btn btn-primary btn-large" id="exportBtn">
+                                <span class="btn-icon">📥</span>
+                                <span class="btn-text">Generate Export</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="export-preview" id="exportPreview">
+                        <h4>Export Preview</h4>
+                        <p id="exportPreviewText">Configure filters above to preview export data</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal large">
+            <div class="modal-header">
+                <h3 id="editModalTitle">Edit Log Entry</h3>
+                <button class="modal-close" id="editModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" class="edit-form">
+                    <input type="hidden" id="editId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" id="editName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Position</label>
+                            <select id="editPosition" class="form-select" required>
+                                <option value="handler">Handler</option>
+                                <option value="lead">Lead</option>
+                                <option value="moderator">Moderator</option>
+                                <option value="elder">Elder</option>
+                                <option value="co-owner">Co-Owner</option>
+                                <option value="owner">Owner</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Start Date</label>
+                            <input type="datetime-local" id="editStartDate" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">End Date</label>
+                            <input type="datetime-local" id="editEndDate" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="metrics-section">
+                        <h4>Activity Metrics</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Attendees Batch 1</label>
+                                <input type="number" id="editAttendeesBatch1" class="form-input" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Attendees Batch 2</label>
+                                <input type="number" id="editAttendeesBatch2" class="form-input" min="0">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Dropped Links</label>
+                                <input type="number" id="editDroppedLinks" class="form-input" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Recruits</label>
+                                <input type="number" id="editRecruits" class="form-input" min="0">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Nicknames Set</label>
+                                <input type="number" id="editNicknamesSet" class="form-input" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Game Handled</label>
+                                <input type="number" id="editGameHandled" class="form-input" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="editModalCancel">Cancel</button>
+                <button class="btn btn-primary" id="editModalSave">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="confirmModalTitle">Confirm Action</h3>
+                <button class="modal-close" id="confirmModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalMessage">Are you sure you want to perform this action?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="confirmModalCancel">Cancel</button>
+                <button class="btn btn-danger" id="confirmModalConfirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p id="loadingText">Loading...</p>
+        </div>
+    </div>
+
+    <script src="/js/theme.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

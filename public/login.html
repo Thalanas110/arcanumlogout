@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Admin Login - Arcanum Academy</title>
+        <link rel="stylesheet" href="/css/styles.css" />
+        <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a5b4fc'><path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/></svg>"
+        />
+    </head>
+    <body class="light-theme">
+        <!-- Background overlay -->
+        <div class="background-overlay"></div>
+
+        <!-- Main Content -->
+        <main class="login-main">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-header">
+                        <div class="login-icon">🔐</div>
+                        <h1 class="login-title">Admin Panel</h1>
+                        <p class="login-subtitle">
+                            Arcanum Academy Management System
+                        </p>
+                    </div>
+
+                    <form id="loginForm" class="login-form">
+                        <div class="form-group">
+                            <label for="username" class="form-label"
+                                >Username</label
+                            >
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                class="form-input"
+                                required
+                                placeholder="Enter admin username"
+                            />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password" class="form-label"
+                                >Password</label
+                            >
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-input"
+                                required
+                                placeholder="Enter admin password"
+                            />
+                        </div>
+
+                        <button type="submit" class="login-btn" id="loginBtn">
+                            <span class="btn-icon">🚀</span>
+                            <span class="btn-text">Complete login</span>
+                        </button>
+                    </form>
+
+                    <div class="login-footer">
+                        <a href="/" class="back-link">
+                            <span>← Back to Log Form</span>
+                        </a>
+                        <button
+                            class="theme-toggle small"
+                            id="loginThemeToggle"
+                        >
+                            <span class="theme-icon">🌙</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Authenticating...</p>
+            </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Authentication Failed</h3>
+                    <button class="modal-close" id="modalClose">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalMessage">
+                        Invalid username or password. Please try again.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="modalOk">OK</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="/js/theme.js"></script>
+        <script>
+            // Login form handling
+            document
+                .getElementById("loginForm")
+                .addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const username = document.getElementById("username").value;
+                    const password = document.getElementById("password").value;
+                    const loadingOverlay =
+                        document.getElementById("loadingOverlay");
+                    const loginBtn = document.getElementById("loginBtn");
+
+                    try {
+                        loadingOverlay.classList.add("active");
+                        loginBtn.disabled = true;
+
+                        const response = await fetch("/admin/login", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ username, password }),
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            // Redirect to admin panel
+                            window.location.href = "/admin-panel";
+                        } else {
+                            throw new Error(data.error || "Login failed");
+                        }
+                    } catch (error) {
+                        console.error("Login error:", error);
+
+                        // Show error modal
+                        document.getElementById("modalTitle").textContent =
+                            "Authentication Failed";
+                        document.getElementById("modalMessage").textContent =
+                            error.message;
+                        document
+                            .getElementById("modalOverlay")
+                            .classList.add("active");
+                    } finally {
+                        loadingOverlay.classList.remove("active");
+                        loginBtn.disabled = false;
+                    }
+                });
+
+            // Modal handling
+            const modalOverlay = document.getElementById("modalOverlay");
+            const modalClose = document.getElementById("modalClose");
+            const modalOk = document.getElementById("modalOk");
+
+            [modalClose, modalOk].forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    modalOverlay.classList.remove("active");
+                });
+            });
+
+            modalOverlay.addEventListener("click", (e) => {
+                if (e.target === modalOverlay) {
+                    modalOverlay.classList.remove("active");
+                }
+            });
+        </script>
+    </body>
+</html>

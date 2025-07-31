@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcanum Academy - Log Out Form</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a5b4fc'><path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/></svg>">
+</head>
+<body class="light-theme">
+    <!-- Background overlay -->
+    <div class="background-overlay"></div>
+    
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <h2>❄️ Arcanum Academy</h2>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <div class="mobile-nav-content" id="mobileNavContent">
+            <a href="/" class="nav-link active">📝 Log Form</a>
+            <a href="/admin-login" class="nav-link">🔐 Admin Panel</a>
+            <button class="theme-toggle" id="mobileThemeToggle">
+                <span class="theme-icon">🌙</span>
+                <span class="theme-text">Dark Mode</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>❄️ Arcanum Academy</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-link active">
+                <span class="nav-icon">📝</span>
+                <span class="nav-text">Log Form</span>
+            </a>
+            <a href="/admin-login" class="nav-link">
+                <span class="nav-icon">🔐</span>
+                <span class="nav-text">Admin Panel</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="theme-toggle" id="desktopThemeToggle">
+                <span class="theme-icon">🌙</span>
+                <span class="theme-text">Dark Mode</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">Session Log-Out Form</h1>
+                <p class="page-subtitle">Record your academy session activities</p>
+            </header>
+
+            <div class="form-container">
+                <form id="logForm" class="log-form">
+                    <!-- Basic Information -->
+                    <section class="form-section">
+                        <h3 class="section-title">📋 Basic Information</h3>
+                        
+                        <div class="form-group">
+                            <label for="name" class="form-label">Name *</label>
+                            <input type="text" id="name" name="name" class="form-input" required 
+                                   placeholder="Enter your full name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="position" class="form-label">Position *</label>
+                            <select id="position" name="position" class="form-select" required>
+                                <option value="">Select your position</option>
+                                <option value="handler">Handler</option>
+                                <option value="lead">Lead</option>
+                                <option value="moderator">Moderator</option>
+                                <option value="elder">Elder</option>
+                                <option value="co-owner">Co-Owner</option>
+                                <option value="owner">Owner</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="startDate" class="form-label">Start Date *</label>
+                                <input type="datetime-local" id="startDate" name="startDate" 
+                                       class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="endDate" class="form-label">End Date</label>
+                                <input type="datetime-local" id="endDate" name="endDate" 
+                                       class="form-input">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Activity Metrics -->
+                    <section class="form-section">
+                        <h3 class="section-title">📊 Activity Metrics</h3>
+                        
+                        <div class="metrics-grid">
+                            <!-- Attendees -->
+                            <div class="metric-card">
+                                <h4 class="metric-title">👥 Attendees</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="attendeesBatch1" class="form-label">Batch 1</label>
+                                        <input type="number" id="attendeesBatch1" name="attendeesBatch1" 
+                                               class="form-input metric-input" min="0" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="attendeesBatch2" class="form-label">Batch 2</label>
+                                        <input type="number" id="attendeesBatch2" name="attendeesBatch2" 
+                                               class="form-input metric-input" min="0" value="0">
+                                    </div>
+                                </div>
+                                <div class="metric-total">
+                                    Total: <span id="attendeesTotal" class="total-value">0</span> points
+                                </div>
+                            </div>
+
+                            <!-- Dropped Links -->
+                            <div class="metric-card">
+                                <h4 class="metric-title">🔗 Dropped Links</h4>
+                                <div class="form-group">
+                                    <input type="number" id="droppedLinks" name="droppedLinks" 
+                                           class="form-input metric-input" min="0" value="0">
+                                </div>
+                                <div class="metric-total">
+                                    Total: <span id="droppedLinksTotal" class="total-value">0</span> points
+                                </div>
+                            </div>
+
+                            <!-- Recruits -->
+                            <div class="metric-card">
+                                <h4 class="metric-title">🎯 Recruits</h4>
+                                <div class="form-group">
+                                    <input type="number" id="recruits" name="recruits" 
+                                           class="form-input metric-input" min="0" value="0">
+                                </div>
+                                <div class="metric-total">
+                                    Total: <span id="recruitsTotal" class="total-value">0</span> points
+                                </div>
+                            </div>
+
+                            <!-- Nicknames Set -->
+                            <div class="metric-card">
+                                <h4 class="metric-title">🏷️ Nicknames Set</h4>
+                                <div class="form-group">
+                                    <input type="number" id="nicknamesSet" name="nicknamesSet" 
+                                           class="form-input metric-input" min="0" value="0">
+                                </div>
+                                <div class="metric-total">
+                                    Total: <span id="nicknamesSetTotal" class="total-value">0</span> points
+                                </div>
+                            </div>
+
+                            <!-- Game Handled -->
+                            <div class="metric-card">
+                                <h4 class="metric-title">🎮 Game Handled</h4>
+                                <div class="form-group">
+                                    <input type="number" id="gameHandled" name="gameHandled" 
+                                           class="form-input metric-input" min="0" value="0">
+                                </div>
+                                <div class="metric-total">
+                                    Total: <span id="gameHandledTotal" class="total-value">0</span> points
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grand Total -->
+                        <div class="grand-total">
+                            <h4>🏆 Grand Total: <span id="grandTotal" class="grand-total-value">0</span> points</h4>
+                        </div>
+                    </section>
+
+                    <!-- Submit Section -->
+                    <section class="form-section">
+                        <div class="submit-section">
+                            <button type="submit" class="submit-btn" id="submitBtn">
+                                <span class="btn-icon">✨</span>
+                                <span class="btn-text">Submit Log Entry</span>
+                            </button>
+                        </div>
+                    </section>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Submitting your log entry...</p>
+        </div>
+    </div>
+
+    <!-- Success/Error Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Success</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">Your log entry has been submitted successfully!</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="modalOk">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/theme.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
