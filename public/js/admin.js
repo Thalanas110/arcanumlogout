@@ -151,12 +151,7 @@ class AdminPanel {
         try {
             this.showLoading('Loading dashboard...');
             
-            const token = localStorage.getItem('adminToken');
-            const response = await fetch('/admin/dashboard-stats', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            const response = await fetch('/admin/dashboard-stats');
             const data = await response.json();
 
             if (data.success) {
@@ -184,12 +179,7 @@ class AdminPanel {
                 ...this.filters
             });
 
-            const token = localStorage.getItem('adminToken');
-            const response = await fetch(`/admin/logs?${params}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            const response = await fetch(`/admin/logs?${params}`);
             const data = await response.json();
 
             if (data.success) {
@@ -334,12 +324,7 @@ class AdminPanel {
         try {
             this.showLoading('Loading activity...');
             
-            const token = localStorage.getItem('adminToken');
-            const response = await fetch('/admin/activity', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            const response = await fetch('/admin/activity');
             const data = await response.json();
 
             if (data.success) {
@@ -608,20 +593,14 @@ class AdminPanel {
 
     async logout() {
         try {
-            const token = localStorage.getItem('adminToken');
             const response = await fetch('/admin/logout', { 
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                method: 'POST'
             });
             if (response.ok) {
-                localStorage.removeItem('adminToken');
                 window.location.href = '/admin-login';
             }
         } catch (error) {
             console.error('Logout error:', error);
-            localStorage.removeItem('adminToken');
             window.location.href = '/admin-login';
         }
     }

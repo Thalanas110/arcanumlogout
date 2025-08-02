@@ -28,16 +28,16 @@
 
                     <form id="loginForm" class="login-form">
                         <div class="form-group">
-                            <label for="email" class="form-label"
-                                >Email</label
+                            <label for="username" class="form-label"
+                                >Username</label
                             >
                             <input
-                                type="email"
-                                id="email"
-                                name="email"
+                                type="text"
+                                id="username"
+                                name="username"
                                 class="form-input"
                                 required
-                                placeholder="Enter admin email"
+                                placeholder="Enter admin username"
                             />
                         </div>
 
@@ -110,7 +110,7 @@
                 .addEventListener("submit", async (e) => {
                     e.preventDefault();
 
-                    const email = document.getElementById("email").value;
+                    const username = document.getElementById("username").value;
                     const password = document.getElementById("password").value;
                     const loadingOverlay =
                         document.getElementById("loadingOverlay");
@@ -125,14 +125,12 @@
                             headers: {
                                 "Content-Type": "application/json",
                             },
-                            body: JSON.stringify({ email, password }),
+                            body: JSON.stringify({ username, password }),
                         });
 
                         const data = await response.json();
 
                         if (data.success) {
-                            // Store the token
-                            localStorage.setItem('adminToken', data.token);
                             // Redirect to admin panel
                             window.location.href = "/admin-panel";
                         } else {
