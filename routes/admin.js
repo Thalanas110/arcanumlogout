@@ -45,6 +45,12 @@ router.post('/login', async (req, res) => {
             
             // Log successful login
             await logActivity('login', username, null, { success: true }, ipAddress);
+            
+            // Send success response
+            res.json({ 
+                success: true,
+                message: 'Login successful'
+            });
         } else {
             // Log failed login attempt
             await logActivity('login', username || 'unknown', null, { 
