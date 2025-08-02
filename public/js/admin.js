@@ -605,9 +605,16 @@ class AdminPanel {
         try {
             const response = await fetch('/admin/logout', { 
                 method: 'POST',
-                credentials: 'same-origin'  // Include cookies in request
+                credentials: 'same-origin',  // Include cookies in request
+                headers: {
+                    'Content-Type': 'application/json'  // Ensure proper content type is set
+                }
             });
             if (response.ok) {
+                window.location.href = '/admin-login';
+            } else {
+                // If we get a 401, clear any stale state and redirect
+                console.error('Logout failed:', response.status);
                 window.location.href = '/admin-login';
             }
         } catch (error) {
