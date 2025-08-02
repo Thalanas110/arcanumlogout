@@ -52,6 +52,13 @@ router.post('/login', async (req, res) => {
                 req.session.isAdmin = true;
                 req.session.adminUser = username;
                 
+                // Set a fallback cookie for Vercel
+                res.cookie('adminAuth', password, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+                });
+                
                 // Log successful login
                 await logActivity('login', username, null, { success: true }, ipAddress);
                 
@@ -91,6 +98,9 @@ router.post('/logout', requireAuth, async (req, res) => {
         
         // Log logout
         await logActivity('logout', adminUser, null, {}, ipAddress);
+        
+        // Clear the admin cookie
+        res.clearCookie('adminAuth');
         
         req.session.destroy((err) => {
             if (err) {
