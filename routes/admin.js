@@ -36,21 +36,34 @@ async function logActivity(action, adminUser, targetId = null, details = {}, ipA
 // Admin login
 router.post('/login', async (req, res) => {
     try {
+        if (!req.body || typeof req.body !== 'object') {
+            return res.status(400).json({ error: 'Invalid request body' });
+        }
+
         const { username, password } = req.body;
         const ipAddress = getClientIP(req);
 
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Username and password are required' });
+        }
+
         if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-            req.session.isAdmin = true;
-            req.session.adminUser = username;
-            
-            // Log successful login
-            await logActivity('login', username, null, { success: true }, ipAddress);
-            
-            // Send success response
-            res.json({ 
-                success: true,
-                message: 'Login successful'
-            });
+            try {
+                req.session.isAdmin = true;
+                req.session.adminUser = username;
+                
+                // Log successful login
+                await logActivity('login', username, null, { success: true }, ipAddress);
+                
+                // Send success response
+                res.json({ 
+                    success: true,
+                    message: 'Login successful'
+                });
+            } catch (sessionError) {
+                console.error('Session error:', sessionError);
+                res.status(500).json({ error: 'Session error occurred' });
+            }
         } else {
             // Log failed login attempt
             await logActivity('login', username || 'unknown', null, { 

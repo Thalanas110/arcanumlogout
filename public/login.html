@@ -128,7 +128,16 @@
                             body: JSON.stringify({ username, password }),
                         });
 
-                        const data = await response.json();
+                        let data;
+                        try {
+                            data = await response.json();
+                        } catch (e) {
+                            throw new Error("Server error. Please try again.");
+                        }
+
+                        if (!response.ok) {
+                            throw new Error(data.error || "Login failed");
+                        }
 
                         if (data.success) {
                             // Redirect to admin panel
@@ -144,7 +153,7 @@
                         document.getElementById("modalTitle").textContent =
                             "Authentication Failed";
                         document.getElementById("modalMessage").textContent =
-                            error.message;
+                            error.message || "An error occurred during login";
                         document
                             .getElementById("modalOverlay")
                             .classList.add("active");
