@@ -151,7 +151,9 @@ class AdminPanel {
         try {
             this.showLoading('Loading dashboard...');
             
-            const response = await fetch('/admin/dashboard-stats');
+            const response = await fetch('/admin/dashboard-stats', {
+                credentials: 'same-origin'  // Include cookies in request
+            });
             const data = await response.json();
 
             if (data.success) {
@@ -179,7 +181,9 @@ class AdminPanel {
                 ...this.filters
             });
 
-            const response = await fetch(`/admin/logs?${params}`);
+            const response = await fetch(`/admin/logs?${params}`, {
+                credentials: 'same-origin'  // Include cookies in request
+            });
             const data = await response.json();
 
             if (data.success) {
@@ -324,7 +328,9 @@ class AdminPanel {
         try {
             this.showLoading('Loading activity...');
             
-            const response = await fetch('/admin/activity');
+            const response = await fetch('/admin/activity', {
+                credentials: 'same-origin'  // Include cookies in request
+            });
             const data = await response.json();
 
             if (data.success) {
@@ -456,6 +462,7 @@ class AdminPanel {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'same-origin',  // Include cookies in request
                 body: JSON.stringify(formData)
             });
 
@@ -489,7 +496,8 @@ class AdminPanel {
             this.showLoading('Deleting log...');
 
             const response = await fetch(`/admin/logs/${logId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                credentials: 'same-origin'  // Include cookies in request
             });
 
             const data = await response.json();
@@ -565,7 +573,9 @@ class AdminPanel {
                 });
             }
 
-            const response = await fetch(`/admin/logs/export?${params}`);
+            const response = await fetch(`/admin/logs/export?${params}`, {
+                credentials: 'same-origin'  // Include cookies in request
+            });
 
             if (response.ok) {
                 const blob = await response.blob();
@@ -594,7 +604,8 @@ class AdminPanel {
     async logout() {
         try {
             const response = await fetch('/admin/logout', { 
-                method: 'POST'
+                method: 'POST',
+                credentials: 'same-origin'  // Include cookies in request
             });
             if (response.ok) {
                 window.location.href = '/admin-login';
