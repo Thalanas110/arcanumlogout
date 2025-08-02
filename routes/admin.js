@@ -33,44 +33,29 @@ async function logActivity(action, adminUser, targetId = null, details = {}, ipA
     }
 }
 
-const supabase = require('../utils/supabase');
-
 // Admin login
 router.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { username, password } = req.body;
         const ipAddress = getClientIP(req);
 
-        // Check if email matches admin email
-        if (email !== process.env.ADMIN_EMAIL) {
-            await logActivity('login', email || 'unknown', null, { 
-                success: false, 
-                reason: 'Not authorized as admin' 
-            }, ipAddress);
-            return res.status(403).json({ error: 'Not authorized as admin' });
-        }
-
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password
-        });
-
-        if (error) {
-            await logActivity('login', email, null, { 
+        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+            req.session.isAdmin = true;
+            req.session.adminUser = username;
+            
+            // Log successful login
+            await logActivity('login', username, null, { success: true }, ipAddress);
+        } else {
+            // Log failed login attempt
+            await logActivity('login', username || 'unknown', null, { 
                 success: false, 
                 reason: 'Invalid credentials' 
             }, ipAddress);
-            return res.status(401).json({ error: 'Invalid credentials' });
+            
+            res.status(401).json({ 
+                error: 'Invalid username or password' 
+            });
         }
-
-        // Log successful login
-        await logActivity('login', email, null, { success: true }, ipAddress);
-        
-        res.json({ 
-            success: true,
-            token: data.session.access_token,
-            message: 'Login successful' 
-        });
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ 
@@ -83,17 +68,18 @@ router.post('/login', async (req, res) => {
 router.post('/logout', requireAuth, async (req, res) => {
     try {
         const ipAddress = getClientIP(req);
-        const email = req.user.email;
-
-        const { error } = await supabase.auth.signOut();
-        
-        if (error) {
-            throw error;
-        }
+        const adminUser = req.session.adminUser;
         
         // Log logout
-        await logActivity('logout', email, null, {}, ipAddress);
-        res.json({ success: true, message: 'Logged out successfully' });
+        await logActivity('logout', adminUser, null, {}, ipAddress);
+        
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('Error destroying session:', err);
+                return res.status(500).json({ error: 'Logout failed' });
+            }
+            res.json({ success: true, message: 'Logged out successfully' });
+        });
     } catch (error) {
         console.error('Error during logout:', error);
         res.status(500).json({ error: 'Logout failed' });
